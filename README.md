@@ -1,12 +1,76 @@
-# React + Vite
+# 🔐 Random Password Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to your one-stop solution for creating strong, secure, and unique passwords in seconds!  
+Whether you need a password for your next big project or just want to boost your online security, this app has you covered.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<!-- Project Link -->
 
-## Expanding the ESLint configuration
+🚀 **Try it now:** [Generate your passwords instantly!](https://random-password-generator-eight-zeta.vercel.app/)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+<!-- Project Image -->
+
+<p align="center">
+  <img src="./src/assets/image.png" alt="Random Password Generator Screenshot" width="600"/>
+</p>
+
+---
+
+A simple and customizable random password generator built with **React** and **Vite**.
+
+## ✨ Features
+
+- 🔒 **Secure:** Generates strong, random passwords every time
+- 🛠️ **Customizable:** Choose uppercase, lowercase, numbers, and symbols
+- 📏 **Flexible:** Set your desired password length
+- 📋 **Convenient:** Copy passwords to your clipboard with one click
+- 📱 **Responsive:** Works beautifully on any device
+
+## 🚀 Getting Started
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/random-password-generator.git
+   cd random-password-generator
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+### Running the App
+
+Start the development server:
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser to get started!
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+## 📝 Usage
+
+1. Select your desired password options (length, character types).
+2. Click **"Generate Password"** to create a new password.
+3. Click the **"Copy"** button to copy the password to your clipboard.
+
+## 🎨 Customization
+
+- Change the default password length and character sets in the source code.
+- Personalize the UI by editing the React components and CSS.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+> 💡 **Pro Tip:** Use unique passwords for every account to maximize your security!
