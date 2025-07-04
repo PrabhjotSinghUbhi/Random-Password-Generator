@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import './index.css';
+import { useCallback, useEffect, useState, useRef } from "react";
+import "./index.css";
 
 // GitHub SVG icon component
 const GitHubIcon = () => (
@@ -17,14 +17,43 @@ const GitHubIcon = () => (
   </svg>
 );
 
+const CopyIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+    <path
+      fill="#67e8f9"
+      d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"
+    />
+  </svg>
+);
+
 function App() {
-  const checks = [
-    { label: "Numbers", range: "(0-9)" },
-    { label: "Small Letters", range: "(a-z)" },
-    { label: "Capital Letters", range: "(A-Z)" },
-    { label: "Spacial Characters", range: "(!@#$...)" }
-  ];
-  const [inputLength, setInputLength] = useState(8);
+  // use state to update the length of the password.
+  const [inputLength, setInputLength] = useState(12);
+
+  //use state to update Number and Chars Allowed or not.
+  const [numAllowed, setNumAllowed] = useState(false);
+  const [charAllowed, setCharAllowed] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const generatePassword = useCallback(() => {
+    let password = "";
+    let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefijklmnopqrstuvwxyz";
+
+    if (charAllowed) str += `!@#$%^&*()_+-={}:"<>?,./;'[]*/~`;
+    if (numAllowed) str += `1234567890`;
+
+    for (let i = 0; i < inputLength; i++) {
+      password += str.charAt(Math.round(Math.random() * str.length));
+    }
+
+    setPassword(password);
+  }, [numAllowed, charAllowed, inputLength, setPassword]);
+
+  const passwordRef = useRef(null);
+
+  useEffect(() => {
+    generatePassword();
+  }, [generatePassword, inputLength, numAllowed, charAllowed]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-2 relative">
@@ -45,6 +74,7 @@ function App() {
           </span>
         </a>
       </div>
+
       <div className="bg-gray-800 rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 w-full max-w-xs sm:max-w-md md:max-w-lg border border-gray-700">
         <h1
           id="heading"
@@ -52,19 +82,43 @@ function App() {
         >
           Password Generator
         </h1>
+
         <div className="mb-6">
-          <label htmlFor="showPassword" className="block text-gray-300 font-semibold mb-2 text-center">
+          <label
+            htmlFor="showPassword"
+            className="block text-gray-300 font-semibold mb-2 text-center"
+          >
             Your Password
           </label>
+
           <div
             id="showPassword"
-            className="text-cyan-300 text-center font-mono bg-gray-700 px-3 py-3 rounded-lg w-full text-lg sm:text-xl break-all border border-cyan-700 shadow-inner"
+            className="text-cyan-300 flex justify-between items-center text-center font-mono bg-gray-700 px-3 py-3 rounded-lg w-full text-lg sm:text-xl break-all border border-cyan-700 shadow-inner"
           >
-            {/* Password will be shown here in real time */}
-            password_here
+            <input
+              ref={passwordRef}
+              value={password}
+              readOnly
+              className="ml-5 bg-transparent outline-none border-none text-cyan-300 w-full font-mono text-lg sm:text-xl"
+              style={{ minWidth: 0 }}
+              aria-label="Generated password"
+            />
+            <button
+              className="w-[45px] h-[45px] hover:bg-cyan-900 hover:rounded-2xl p-3 cursor-pointer"
+              onClick={() => {
+                passwordRef.current?.select();
+                window.navigator.clipboard.writeText(password);
+              }}
+            >
+              <CopyIcon />
+            </button>
           </div>
         </div>
-        <div id="slider" className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-6">
+
+        <div
+          id="slider"
+          className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-6"
+        >
           <input
             type="range"
             name="Length"
@@ -72,9 +126,10 @@ function App() {
             min={8}
             max={30}
             value={inputLength}
-            onChange={e => setInputLength(Number(e.target.value))}
-            className="w-full sm:w-3/4 accent-cyan-400"
+            onChange={(event) => setInputLength(Number(event.target.value))}
+            className="w-full sm:w-3/4 accent-cyan-400 cursor-pointer"
           />
+
           <span
             id="inputValue"
             className="bg-cyan-900 text-cyan-200 px-3 py-1 rounded-lg font-mono text-lg border border-cyan-700 mt-2 sm:mt-0 shadow"
@@ -82,26 +137,51 @@ function App() {
             {inputLength}
           </span>
         </div>
+
         <ul className="flex flex-col gap-3 mb-8">
-          {checks.map(check => (
-            <li key={check.label} className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name={check.label}
-                id={check.label}
-                className="accent-cyan-400 w-5 h-5"
-              />
-              <label htmlFor={check.label} className="text-gray-200 font-medium text-sm sm:text-base flex items-center gap-2">
-                {check.label}
-                <span className="text-cyan-400 font-mono text-xs sm:text-sm">{check.range}</span>
-              </label>
-            </li>
-          ))}
+          <li key="Numbers" className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="Numbers"
+              id="Numbers"
+              className="accent-cyan-400 w-5 h-5"
+              onChange={() => setNumAllowed((prev) => !prev)}
+            />
+            <label
+              htmlFor="Numbers"
+              className="text-gray-200 font-medium text-sm sm:text-base flex items-center gap-2"
+            >
+              <span>Numbers</span>
+              <span className="text-cyan-400 font-mono text-xs sm:text-sm">
+                (0-9)
+              </span>
+            </label>
+          </li>
+
+          <li key="Special Characters" className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="Special Characters"
+              id="Special Characters"
+              className="accent-cyan-400 w-5 h-5"
+              onChange={() => setCharAllowed((prev) => !prev)}
+            />
+            <label
+              htmlFor="Special Characters"
+              className="text-gray-200 font-medium text-sm sm:text-base flex items-center gap-2"
+            >
+              <span>Special Characters</span>
+              <span className="text-cyan-400 font-mono text-xs sm:text-sm">
+                (!@#$...)
+              </span>
+            </label>
+          </li>
         </ul>
         <div className="text-center text-gray-500 text-xs">
           Password updates in real time as you change options.
         </div>
       </div>
+
       {/* Credits Section */}
       <footer className="mt-8 mb-4 text-center text-gray-400 text-xs flex flex-col items-center gap-2">
         <span>
